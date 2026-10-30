@@ -1,0 +1,31 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "org.eggwars_game.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ControlZoneMixin",
+    "EndermanDropmixin",
+    "EntityDataMixin",
+    "PotionEntityMixin",
+    "TridentItemMixin",
+    "EggwarsEntityMixins.EntityRemoveMixin",
+    "EggwarsEntityMixins.OwnableEntitySpawnMixin",
+    "EggwarsEntityMixins.SpawnEggItemMixin",
+    "EndCrystalMixins.EndCrystalDamageMixin",
+    "EndCrystalMixins.EndCrystalDestroyMixin",
+    "ModifierMixins.ModifierBlockBreakMixin",
+    "ModifierMixins.ProjectilePearlBarrierBlockMixin",
+    "PlayerMixins.EndCrystalPlacementMixin",
+    "PlayerMixins.ModifierEntityInteractionMixin",
+    "PlayerMixins.RespawnMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
+
+

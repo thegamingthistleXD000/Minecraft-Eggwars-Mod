@@ -1,0 +1,7 @@
+
+{
+    "parent" : "minecraft:item/generated",
+    "textures" : {
+        "layer0" : "eggwars_mod:item/ender_shard"
+    }
+}

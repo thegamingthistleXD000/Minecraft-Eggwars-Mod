@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "eggwars",
+  "version": "${version}",
+  "name": "Eggwars",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/eggwars_mod/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "org.eggwars_game.eggwars.client.EggwarsDataGenerator"
+    ],
+    "client": [
+      "org.eggwars_game.eggwars.client.EggwarsClient"
+    ],
+    "main": [
+      "org.eggwars_game.eggwars_mod.Eggwars"
+    ]
+  },
+  "mixins": [
+    "eggwars_mod.mixins.json",
+    {
+      "config": "eggwars.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
