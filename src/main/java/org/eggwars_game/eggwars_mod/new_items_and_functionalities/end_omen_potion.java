@@ -1,0 +1,1 @@
+//dragon will be attracted to player who has highest level of end omen status effect and is within a x block radius of the dragon, and will target that player naturally, unless other triggers like other players damaging it are present. drink consecutive times to increase level upto 5

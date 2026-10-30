@@ -1,0 +1,159 @@
+
+# Map :
+2 or 4 teams of 1-10 players, spawning on ase islands surrounding the central main island. All base islands will be equidistant  to main island (like bedwars). On the opposite side to the central island, there will be a custom end city island with loot, 1 for every base island. 
+
+# Goal : 
+Kill dragon and capture dragon egg, and take it and keep it at your team base at the same spot for 150 seconds. Team that does this wins. Or, eliminate all other teams. 
+
+# Crystal Towers : 
+On central main island, crystal towers of sizes short, medium and tall will be there placed symmetrically. End crystals on top at center of these towers will be special, called "control points" , and will have special mechanics. By default, all  crystal towers will have end crystals on top and they will be neutral. Once a team breaks one and places their own, the control point will be claimed by that team. There will be a beacon beam through the crystal of the colour of which team controls the end crystal. eg. red beam in the image. Neutral = white (default) . 
+
+# Control point Crystals :
+
+## Basic Mechanics :
+Spawns iron and gold ingots periodically (like bedwars). Spawned ingots are immune to its own fire. Enemy team player touching the crystal will cause it to explode, destroying all its spawned resources that are on it with it. 
+Say if b4 the crystal was of red teams, and then a yellow team shot and destroyed it, the red beam will disappear, then when the yellow player places his own crystal , a yellow beacon beam will appear. 
+Each crystal tower will have a radius of control around it proportional to its height (important later)
+
+## Crystal Modifiers :
+Once a team controls a crystal, it can buy from shop and place modifiers in or around the crystal. This is the main part of the minigame. 
+Modifiers can have modes with different functionalities, indicated by mode1/mode2
+
+1. **ender spirit** : 
+	 mode1 - healing allies beam : a healing beam like the one that heals the dragon , that targets team players in its range and heals them upto 2 players at a time.  
+	 mode2 - beaming attack enemy players like guardian beam, one at a time.
+	 
+	 both beams can go through bedrock, obsidian, and endstone, but is blocked by other blocks. Ender spirit has to be placed into the crystal
+	 
+2. **crystal connect** : 
+	mode1 : fast air travel between connected crystals 
+	mode2 - create zone : connecting crystals in a polygon will give the team control over the polygon area = "zone" i.e. connecting 3 crystals with this mode creates a triangle zone which the team has control over. 
+	if multiple teams have control over the same area, it is disputed and will be neutral till a team has majority control. say red has 2 trianges covering the area while yellow has 3. Then it will be yellow's zone. 
+
+	 Crystal connect has to be placed into a crystal, then another one to link them
+
+3. **Force-Field** : 
+	 mode1 - repel : enemy projectiles and entities going towards the crystal (have a motion vector component in direction of crystal) will get repelled by a force proportional to distance^2 against its component in the crystal's direction. (like electrostatic repulsion) 
+	 mode2 - pull : same as repel, but with enemy players getting pulled like a gravity attraction
+	 mode3 - mining fatigue : applies mining fatigue to enemies in range proportional to distance
+	 mode4 - ally buffs : gives speed or strength to allies in range proportional to distance
+
+	Force Field can be placed anywhere in a claimed zone (either default tower zones or ones claimed by crystal connect) , but they decrease in strength farther they are from the nearest control point crystals
+
+4. **Chorus warp** : 
+	mode1 - warp : eating a linked chorus fruit will teleport you to on top of it if you are in range - 1 use before needing recharge
+	mode2 - reveal : reveals enemy players positions in range to your team by glowing them for 3s . - 2 uses before needing recharge
+
+	Can be placed as a special chorus tree block anywhere in claimed zone. Need chorus fruit to right click to link it to the chorus warp . 
+
+5. **Pearl Barrier** : Creates a barrier wall around the crystal that deflects enemy enderpearls, snowballs, fireballs, and fireworks hitting on a 6x6 bounding box around the crystal. if 2 connected crystals have pearl barrier, and they are close enough, a barrier wall will appear between them extending all the way to ground, blocking the projectiles listed.
+
+Crystals cannot have ender spirit and crystal connect together. 
+All Crystal Modifiers can be levelled up to increase different stats.  r
+## Spawn Crystals :
+Crystals placed by default in team bases are control points which are also spawn crystals. If its broken, a team can replace it again, making it theirs. there is only 1 spawn crystal spot per base island. Team players can respawn only if their spawn crystal is alive. Team can destroy others spawn crystal and replace it with their own to claim it, and then after dying, can choose to respawn at either base island where they have a spawn crystal. Spawn Crystals by default have a pearl barrier. They spawn resources at a higher rate, and have more max. resource limit can normal control points. 
+
+# Shop and resources :
+
+## Resources :
+
+Iron, Gold, Diamond, Emeralds
+Iron and Gold spawn at any claimed control crystal.
+Diamond and Emerald have separate special altars.
+
+Crafting using these will be disabled
+## Shop :
+
+Only at spawn island bases. 
+### Item shop :
+
+#### Categories :
+tables and stations, blocks, weapons and tools, enchantment books, potions and consumables, armor, ender utilities, redstone, individual upgrades, team prots, traps
+#### 
+#### Special Items :
+end omen : makes dragon follow you for some seconds
+riptide trident : splash potion of water / any splash potion allows usage for 1.5s after splashing.
+
+Mace : lower damage per block fallen, lower wind burst force, incompatible with fire aspect, looting
+
+Elytra : bit slower, low durability, 
+
+dragon head : wearing it makes neutral crystals target healing beams at you, and increase healing recieved from ender spirit control crystals by a percentage.
+
+Suppression potion : Suppresses enemy crystal modifiers effects in 3x3 radius of player while effect is on. Instead, combine with arrow or trident to then shoot / throw it to clear all effects around  3x3 radius around its path for 2s, and at impact (where it lands) for 7s. recombine / redrink another one for upping level of effect, increasing normal suppression duration by 1.5s per lvl and that of impact by 2.5s , upto 4 levels.
+
+Enchanting table : Will list all possible enchantments and levels at same time. different enchants level 1 will cost different amounts of diamonds, xp, and xp requirement. 
+
+Chorus Fruit : tps in a spherical range, and prefers higher position amongst same distance blocks
+
+									
+#### 
+
+### Upgrades :
+
+#### Individual upgrades 
+Sharpness, efficiency, power, impaling
+
+#### Team permanent upgrades :
+all protections
+
+#### traps :
+slowness + blindness, alarm and reveal, mining fatigue, no escape, cobwebfire
+
+# Dragon AI
+
+## General
+
+Circles around the main island . Neutral crystals heal him. 
+
+## Perching
+
+## Targeting
+## Attacking
+## Respawning
+if >5 neutral crystals are still live anywhere (neednt be control crystals) after dragon death, they target the fallen dragon egg with healing beams, and if allowed to do so for 5s, dragon egg hatches and respawns dragon 
+
+## Dying 
+Player that did most damage gets resource gen boost, and a lot of emeralds. Player that killed him can mine the dragon egg with pickaxe for first 8s after dragon death, and gets most of the dragon xp. Dragon egg drops where dragon died. 
+
+## Dragon Egg 
+
+Obtaining : breaking with torch (normal methods) , breaking with silk touch pickaxe while crouching, making it ride in minecart or boat, or pushing by piston. 
+
+Voiding falling : Will teleport it at dragon's nest center
+
+Player carrying dragon egg will glow and will have an egg icon above his head that can be seen by everyone, can't use elytra, and targeted with attacking beams by neutral crystals. Also, after taking the egg in inventory, pearls will be on 5s cooldown. 
+# Gameplay :
+
+## Initiation : 
+bedwars like lobby and team selection menus
+After spawning, 
+## Starting Phase
+
+## Post Dragon death
+## Tiebreakers
+
+### Tiebreaker 1
+Dragon instantly killed, no kill reward to anyone, xp spread everywhere like normal dragon fight, egg drops on center pillar of nest. No respawning possible post this. 
+
+Trigger : if >totalteams/2 teams are still left and dragon not killed after 20 mins
+### Tiebreaker 2
+All control crystals destroyed 
+
+Trigger : egg not planted on a base even once 
+### Tiebreaker 3
+All spawn crystals destroyed permanently (but spawn gen still happening but slower rate) , 
+### Tiebreaker 4
+All crystal modifiers disabled (even the ones that are permanent by default like pearl barriers on emerald gen crystals) , totems, elytras, mace enchants disabled
+
+## Egg Events
+### Egg capture
+All players will be notified of the capture and who did it. 
+
+### Egg voided intentionally 
+by (ctrl+q)
+All non spawn end crystals and voiding team's spawn crystal destroyed temporarily- including spawn gen till its replaced. 
+
+### Egg Placed at spawn base :
+Egg to be placed in a 6 block range of any crystal at spawn. If it goes out of it, the timer gets paused and starts ticking up instead of down (max. 1.5 mins). If egg leaves spawn island or is dropped as an item, the timer resets to 1.5 mins. 
+
