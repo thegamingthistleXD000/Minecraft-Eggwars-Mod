@@ -3,7 +3,6 @@ package org.eggwars_game.eggwars_mod.Commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.command.argument.BlockPosArgumentType;
-import net.minecraft.entity.Entity;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -68,7 +67,7 @@ public class SetCrystalSpotCommand {
 
                                                             var player = source.getPlayer();
                                                             EggwarsMatch match =
-                                                                    Eggwars.getMatch((Entity) player);
+                                                                    Eggwars.getMatch(player);
 
                                                             if (match == null) {
                                                                 source.sendError(

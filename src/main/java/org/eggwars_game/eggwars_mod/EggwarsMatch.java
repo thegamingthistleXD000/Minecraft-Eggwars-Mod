@@ -1,16 +1,18 @@
 package org.eggwars_game.eggwars_mod;
 
+import lombok.Getter;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.*;
-import org.eggwars_game.eggwars_mod.control_point_crystals.controlcrystals.ControlZone;
 import org.eggwars_game.eggwars_mod.Players.EggwarsPlayer;
 import org.eggwars_game.eggwars_mod.control_point_crystals.SpecialSpot;
 import org.eggwars_game.eggwars_mod.control_point_crystals.controlcrystals.ControlCrystal;
+import org.eggwars_game.eggwars_mod.control_point_crystals.controlcrystals.ControlZone;
 import org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.ChorusWarp.ChorusWarp;
 import org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.CrystalConnect.CrystalConnect;
 import org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.EnderSpirit.EnderSpirit;
@@ -18,19 +20,17 @@ import org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.For
 import org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.Modifier;
 import org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.ModifierManager;
 import org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.PearlBarrier.PearlBarrier;
-
+import org.eggwars_game.network.ServerNetworkSender;
 
 import java.util.*;
 
 public class EggwarsMatch {
 
-    private final String name;
+    @Getter private final String name;
+    @Getter private final UUID matchID =  UUID.randomUUID();
 
-    public String getName (){
-        return name;
-    }
     ArrayList<ControlCrystal> crystals = new ArrayList<>();
-    ArrayList<EggwarsPlayer> players = new  ArrayList<>();
+    @Getter ArrayList<EggwarsPlayer> players = new  ArrayList<>();
     Map<BlockPos, Set<SpecialSpot>> spots = new HashMap<>();
     ArrayList<EggwarsTeam> teams = new ArrayList<>();
     Map<UUID, EggwarsEntity> entities = new HashMap<>();
@@ -39,7 +39,7 @@ public class EggwarsMatch {
 
     boolean active = true;
 
-    private final Box bounds;
+    @Getter private final Box bounds;
 
     public EggwarsMatch(String name, BlockPos corner1, BlockPos corner2) {
         this.name = name;
@@ -49,16 +49,15 @@ public class EggwarsMatch {
 
     public void tick(){
         modManager.tick();
+        for (EggwarsPlayer player : players) {
+            player.tick();
+        }
     }
     public boolean contains(BlockPos pos) {
         return bounds.contains(Vec3d.ofCenter(pos));
     }
 
-    public Box getBounds() {
-        return bounds;
-    }
-
-    public EggwarsPlayer getEggwarsPlayer(ServerPlayerEntity player) {
+    public EggwarsPlayer getEggwarsPlayer(PlayerEntity player) {
         return players.stream()
                 .filter(p -> p.getPlayer().equals(player))
                 .findFirst()
@@ -93,6 +92,7 @@ public class EggwarsMatch {
     public EggwarsTeam createTeam(Teams teamType) {
         EggwarsTeam team = new EggwarsTeam(this, teamType);
         addTeam(team);
+        ServerNetworkSender.sendAddTeam(this, team);
         return team;
     }
 
@@ -103,7 +103,9 @@ public class EggwarsMatch {
     }
 
     public void addTeam(EggwarsTeam team) {teams.add(team);}
-    public void removeTeam(EggwarsTeam team) {teams.remove(team);}
+    public void removeTeam(EggwarsTeam team) {
+        ServerNetworkSender.sendRemoveTeam(this, team);
+        teams.remove(team);}
 
 
 
@@ -116,23 +118,21 @@ public class EggwarsMatch {
     public final ModifierManager<EnderSpirit> spiritManager = new ModifierManager<>();
 
     public ChorusWarp createChorusWarp(BlockPos pos, EggwarsPlayer player) {
-        ServerPlayerEntity serverPlayer = player.getPlayer();
+        PlayerEntity serverPlayer = player.getPlayer();
         serverPlayer.sendMessage(Text.literal("ChorusWarp created"), true);
 
         ChorusWarp modifier = new ChorusWarp(pos, player);
-        modManager.addModifier(() -> modifier, pos);
-        warpManager.addModifier(() -> modifier, pos);
-        System.out.println(warpManager.getModifiers());
-        return modifier;
+        modifier.register(this);
+
+       return modifier;
     }
 
 
     public ForceField createForceField(BlockPos pos, EggwarsPlayer player, Direction facing) {
-        ServerPlayerEntity serverPlayer = player.getPlayer();
+        PlayerEntity serverPlayer = player.getPlayer();
         serverPlayer.sendMessage(Text.literal("ForceField created"), true);
         ForceField modifier = new ForceField(pos, player, facing);
-        modManager.addModifier(() -> modifier, pos);
-        fieldManager.addModifier(() -> modifier, pos);
+        modifier.register(this);
         return modifier;
     }
 
@@ -140,33 +140,37 @@ public class EggwarsMatch {
             EggwarsPlayer player,
             ControlCrystal ccA, ControlCrystal ccB
     ) {
-        ServerPlayerEntity serverPlayer = player.getPlayer();
+        PlayerEntity serverPlayer = player.getPlayer();
         serverPlayer.sendMessage(Text.literal("CrystalConnect created"), true);
         CrystalConnect modifier = new CrystalConnect(player, ccA, ccB);
-        modManager.addModifier(() -> modifier, ccB.getPosition());
-        connectManager.addModifier(() -> modifier, ccB.getPosition());
+        modifier.register(this);
+        ServerNetworkSender.sendAddCrystalRay(
+                getPlayers(),
+                modifier.getModifierID(),
+                modifier.getFrom().getPosition(),
+                modifier.getTo().getPosition(),
+                player.getTeam().getColor()
+        );
         return modifier;
     }
 
     public PearlBarrier createPearlBarrier(
             ControlCrystal crystal, EggwarsPlayer player
     ) {
-        ServerPlayerEntity serverPlayer = player.getPlayer();
+        PlayerEntity serverPlayer = player.getPlayer();
         serverPlayer.sendMessage(Text.literal("PearlBarrier created"), true);
         PearlBarrier modifier = new PearlBarrier(crystal, player);
-        modManager.addModifier(() -> modifier, crystal.getPosition());
-        barrierManager.addModifier(() -> modifier, crystal.getPosition());
+        modifier.register(this);
         return modifier;
     }
 
     public EnderSpirit createEnderSpirit(
             ControlCrystal crystal, EggwarsPlayer player
     ) {
-        ServerPlayerEntity serverPlayer = player.getPlayer();
+        PlayerEntity serverPlayer = player.getPlayer();
         serverPlayer.sendMessage(Text.literal("EnderSpirit created"), true);
         EnderSpirit modifier = new EnderSpirit(crystal, player);
-        modManager.addModifier(() -> modifier, crystal.getPosition());
-        spiritManager.addModifier(() -> modifier, crystal.getPosition());
+        modifier.register(this);
         return modifier;
     }
 
@@ -193,19 +197,20 @@ public class EggwarsMatch {
         }
     }
 
-    public void removeCrystalConnect(BlockPos pos) {
+    public void removeCrystalConnect(ControlCrystal cc) {
         for (CrystalConnect modifier : connectManager.getModifiers()) {
-            if (pos.equals(connectManager.getPosition(modifier))) {
+            if (modifier.getControlCrystal() == cc){
                 connectManager.removeModifier(modifier);
                 modManager.removeModifier(modifier);
                 return;
-            }
+                }
+
         }
     }
 
-    public void removePearlBarrier(BlockPos pos) {
+    public void removePearlBarrier(ControlCrystal cc) {
         for (PearlBarrier modifier : barrierManager.getModifiers()) {
-            if (pos.equals(barrierManager.getPosition(modifier))) {
+            if (modifier.getControlCrystal() == cc){
                 barrierManager.removeModifier(modifier);
                 modManager.removeModifier(modifier);
                 return;
@@ -213,9 +218,15 @@ public class EggwarsMatch {
         }
     }
 
-    public void removeEnderSpirit(EnderSpirit modifier) {
-        spiritManager.removeModifier(modifier);
-        modManager.removeModifier(modifier);
+    public void removeEnderSpirit(ControlCrystal cc) {
+        for (EnderSpirit modifier : spiritManager.getModifiers()) {
+            if (modifier.getControlCrystal() == cc){
+                spiritManager.removeModifier(modifier);
+                modManager.removeModifier(modifier);
+                return;
+            }
+
+        }
     }
 
     public EggwarsEntity addEntity(Entity entity, EggwarsTeam team) {
@@ -223,8 +234,11 @@ public class EggwarsMatch {
 
         if (entity instanceof ServerPlayerEntity player) {
             eggwarsEntity = new EggwarsPlayer(player, this, team);
-            
-        } else {
+        }
+        else if (entity instanceof EndCrystalEntity crystalEntity){
+            eggwarsEntity = addControlCrystal(crystalEntity, team);
+        }
+        else {
             eggwarsEntity = new EggwarsEntity(entity, this, team);
         }
 
@@ -262,6 +276,11 @@ public class EggwarsMatch {
         for (UUID id : entities.keySet()){
             if (id.equals(entity.getEntity().getUuid())){
                  entities.remove(id);
+                 for (ControlZone zone : zones){
+                     if (zone.getSources().contains(entity)){
+                         removeControlZone(zone);
+                     }
+                 }
                  return true;
             }
         }
@@ -294,7 +313,6 @@ public class EggwarsMatch {
 
         System.out.println("adding control crystal");
         ControlCrystal cc = new ControlCrystal(endcrys, this, team);
-        addEntity(endcrys, team);
         addControlCrystal(cc);
         makeControlZone(ControlZone.zonetype.cone, team, 10, 20, cc.getPosition().subtract(new Vec3i(0, 20, 0)));
 
@@ -305,7 +323,12 @@ public class EggwarsMatch {
 
     public  void removeControlCrystal(ControlCrystal crystal) {
         System.out.println("removed control crystal");
-        crystals.remove(crystal);}
+        removeCrystalConnect(crystal);
+        removePearlBarrier(crystal);
+        removeEnderSpirit(crystal);
+        crystals.remove(crystal);
+
+    }
 
 
 
@@ -378,6 +401,7 @@ public class EggwarsMatch {
         return zone;
     }
     public  void removeControlZone(ControlZone zone) {
+        System.out.println("removed zone");
         zones.remove(zone);
 
     }
@@ -428,7 +452,7 @@ public class EggwarsMatch {
         }
     }
 
-    public   ArrayList<ControlZone> getControlZones() {return zones;}
+    public   List<ControlZone> getControlZones() {return zones;}
 
 
 

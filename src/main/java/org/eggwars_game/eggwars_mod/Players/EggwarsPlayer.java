@@ -1,23 +1,27 @@
 package org.eggwars_game.eggwars_mod.Players;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.GameMode;
 import org.eggwars_game.eggwars_mod.EggwarsEntity;
 import org.eggwars_game.eggwars_mod.EggwarsMatch;
 import org.eggwars_game.eggwars_mod.EggwarsTeam;
 import org.eggwars_game.eggwars_mod.control_point_crystals.controlcrystals.ControlCrystal;
 import org.eggwars_game.eggwars_mod.control_point_crystals.controlcrystals.Crystals.SpawnCrystal;
+import org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.CrystalConnect.FastTravelState;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class EggwarsPlayer extends EggwarsEntity {
 
     int extra_lives = 1;
-    private final ServerPlayerEntity player;
+    @Getter private final PlayerEntity player;
 
-    GameMode gamemode = GameMode.SURVIVAL;
+    @Setter @Getter boolean fastTravelling = false;
 
     public EggwarsPlayer(ServerPlayerEntity player, EggwarsMatch match, EggwarsTeam team) {
         super(player,match, team);
@@ -25,14 +29,21 @@ public class EggwarsPlayer extends EggwarsEntity {
     }
 
 
+    public ServerPlayerEntity getServerPlayer() {
+        return player instanceof ServerPlayerEntity serverPlayer
+                ? serverPlayer
+                : null;
+    }
+    
+
     void Respawn (ControlCrystal crystal){
         if (!findSpawnCrystals().contains(crystal)){
             return;
         }
-        player.getServer().getPlayerManager().respawnPlayer(player, false, Entity.RemovalReason.KILLED);
+        Objects.requireNonNull(player.getServer()).getPlayerManager().respawnPlayer((ServerPlayerEntity) player, false, Entity.RemovalReason.KILLED);
 
-        BlockPos SpawnPos = crystal.getEndCrystal().getBlockPos();
-        player.teleport(SpawnPos.getX(), SpawnPos.getY(), SpawnPos.getZ(), false);
+        BlockPos spawnPos = crystal.getEndCrystal().getBlockPos();
+        player.teleport(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), false);
     }
 
     void Respawn (){
@@ -47,16 +58,6 @@ public class EggwarsPlayer extends EggwarsEntity {
     }
 
 
-
-    public GameMode getgamemode (){
-        return gamemode;
-    }
-    public void setgamemode (GameMode gamemode){
-        this.gamemode = gamemode;
-    }
-
-    public ServerPlayerEntity getPlayer(){return player;}
-
     private ArrayList<ControlCrystal> findSpawnCrystals (){
         ArrayList<ControlCrystal> spawnCrystals = new ArrayList<ControlCrystal>();
 
@@ -66,6 +67,12 @@ public class EggwarsPlayer extends EggwarsEntity {
             }
         }
         return spawnCrystals;
+    }
+
+    public void tick() {
+
+        FastTravelState.updateFastTravel(this);
+
     }
 
 }

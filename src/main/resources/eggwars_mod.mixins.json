@@ -9,6 +9,7 @@
     "EntityDataMixin",
     "PotionEntityMixin",
     "TridentItemMixin",
+    "VanillaFireworkMixin",
     "EggwarsEntityMixins.EntityRemoveMixin",
     "EggwarsEntityMixins.OwnableEntitySpawnMixin",
     "EggwarsEntityMixins.SpawnEggItemMixin",
@@ -16,6 +17,7 @@
     "EndCrystalMixins.EndCrystalDestroyMixin",
     "ModifierMixins.ModifierBlockBreakMixin",
     "ModifierMixins.ProjectilePearlBarrierBlockMixin",
+    "ModifierMixins.ConnectRaySwimmingMixin",
     "PlayerMixins.EndCrystalPlacementMixin",
     "PlayerMixins.ModifierEntityInteractionMixin",
     "PlayerMixins.RespawnMixin"

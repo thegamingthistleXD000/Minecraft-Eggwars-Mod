@@ -1,22 +1,13 @@
 package org.eggwars_game.eggwars_mod.Utils;
 
-import com.jcraft.jorbis.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.Map;
-
-
-
-
-
-
-
-
 
 
 public class RayCast {
@@ -24,12 +15,16 @@ public class RayCast {
     private static final float ray_width = 2;
 
     public static Map<BlockPos, BlockState> getRayObstructions(
-            ServerWorld world, BlockPos a, BlockPos b, int width) {
-
+            World world,
+            BlockPos a,
+            BlockPos b,
+            int width
+    ) {
         Map<BlockPos, BlockState> obstructions = new HashMap<>();
 
         Vec3d start = a.toCenterPos();
         Vec3d end = b.toCenterPos();
+        Vec3d ray = end.subtract(start);
 
         int x = a.getX();
         int y = a.getY();
@@ -39,52 +34,61 @@ public class RayCast {
         int endY = b.getY();
         int endZ = b.getZ();
 
-        int dx = Integer.compare(endX, x);
-        int dy = Integer.compare(endY, y);
-        int dz = Integer.compare(endZ, z);
+        int stepX = Integer.compare(endX, x);
+        int stepY = Integer.compare(endY, y);
+        int stepZ = Integer.compare(endZ, z);
+
+        double tDeltaX = stepX == 0 ? Double.POSITIVE_INFINITY : 1.0 / Math.abs(ray.x);
+        double tDeltaY = stepY == 0 ? Double.POSITIVE_INFINITY : 1.0 / Math.abs(ray.y);
+        double tDeltaZ = stepZ == 0 ? Double.POSITIVE_INFINITY : 1.0 / Math.abs(ray.z);
+
+        double tMaxX = stepX == 0 ? Double.POSITIVE_INFINITY :
+                (stepX > 0 ? x + 1 - start.x : start.x - x) * tDeltaX;
+
+        double tMaxY = stepY == 0 ? Double.POSITIVE_INFINITY :
+                (stepY > 0 ? y + 1 - start.y : start.y - y) * tDeltaY;
+
+        double tMaxZ = stepZ == 0 ? Double.POSITIVE_INFINITY :
+                (stepZ > 0 ? z + 1 - start.z : start.z - z) * tDeltaZ;
+
+        int radius = Math.max(0, (width - 1) / 2);
 
         while (true) {
-
-            int radius = (width - 1) / 2;
-
             for (int ox = -radius; ox <= radius; ox++) {
                 for (int oy = -radius; oy <= radius; oy++) {
                     for (int oz = -radius; oz <= radius; oz++) {
 
-                        BlockPos pos = new BlockPos(
-                                x + ox,
-                                y + oy,
-                                z + oz
-                        );
+                        BlockPos pos = new BlockPos(x + ox, y + oy, z + oz);
+
+                        if (pos.equals(a) || pos.equals(b)) continue;
 
                         BlockState state = world.getBlockState(pos);
 
-                        if (!state.isAir())
-                            obstructions.put(pos, state);
+                        if (!state.isAir()) {
+                            obstructions.put(pos.toImmutable(), state);
+                        }
                     }
                 }
             }
 
-            if (x == endX && y == endY && z == endZ)
-                break;
+            if (x == endX && y == endY && z == endZ) break;
 
-            Vec3d current = new Vec3d(x + 0.5, y + 0.5, z + 0.5);
+            double next = Math.min(tMaxX, Math.min(tMaxY, tMaxZ));
 
-            double tx = dx == 0 ? Double.MAX_VALUE :
-                    Math.abs((end.x - current.x) / (end.x - start.x));
+            if (tMaxX <= next + 1.0E-10) {
+                x += stepX;
+                tMaxX += tDeltaX;
+            }
 
-            double ty = dy == 0 ? Double.MAX_VALUE :
-                    Math.abs((end.y - current.y) / (end.y - start.y));
+            if (tMaxY <= next + 1.0E-10) {
+                y += stepY;
+                tMaxY += tDeltaY;
+            }
 
-            double tz = dz == 0 ? Double.MAX_VALUE :
-                    Math.abs((end.z - current.z) / (end.z - start.z));
-
-            if (tx < ty && tx < tz)
-                x += dx;
-            else if (ty < tz)
-                y += dy;
-            else
-                z += dz;
+            if (tMaxZ <= next + 1.0E-10) {
+                z += stepZ;
+                tMaxZ += tDeltaZ;
+            }
         }
 
         return obstructions;

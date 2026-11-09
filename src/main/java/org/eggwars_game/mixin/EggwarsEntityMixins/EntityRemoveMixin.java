@@ -23,6 +23,6 @@ public class EntityRemoveMixin {
         EggwarsMatch match = Eggwars.getMatch(entity);
         if (match == null) return;
 
-        match.removeEntity(entity);
+        Eggwars.removeFromMatch(match.getEggwarsEntity(entity));
     }
 }

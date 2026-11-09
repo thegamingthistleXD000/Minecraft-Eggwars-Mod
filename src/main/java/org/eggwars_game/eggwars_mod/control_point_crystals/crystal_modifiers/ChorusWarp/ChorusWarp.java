@@ -1,35 +1,16 @@
 package org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.ChorusWarp;
 
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.world.World;
 import org.eggwars_game.eggwars_mod.EggwarsMatch;
 import org.eggwars_game.eggwars_mod.Players.EggwarsPlayer;
-import org.eggwars_game.eggwars_mod.control_point_crystals.controlcrystals.ControlCrystal;
 import org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.Modifier;
 import org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.modifiers;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.UUID;
 
 import java.util.List;
 
@@ -61,11 +42,10 @@ public class ChorusWarp extends Modifier {
     private Mode mode;
 
     @Override
-    public void register(EggwarsMatch match, BlockPos pos) {
-        match.modManager.addModifier(() -> this, pos);
-        match.warpManager.addModifier(() -> this, pos);
+    public void register(EggwarsMatch match) {
+        super.register(match);
+        match.warpManager.addModifier(() -> this, getPosition());
     }
-
     public ChorusWarp(BlockPos position,  EggwarsPlayer player) {
         super(position, modifiers.mods.ChorusWarp,  player);
         this.mode = Mode.WARP;

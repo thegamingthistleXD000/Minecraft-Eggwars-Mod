@@ -14,7 +14,9 @@
       "org.eggwars_game.eggwars.client.EggwarsDataGenerator"
     ],
     "client": [
-      "org.eggwars_game.eggwars.client.EggwarsClient"
+      "org.eggwars_game.eggwars.client.EggwarsClient",
+      "org.eggwars_game.eggwars.client.Renderers.ModEntityRenderers"
+
     ],
     "main": [
       "org.eggwars_game.eggwars_mod.Eggwars"

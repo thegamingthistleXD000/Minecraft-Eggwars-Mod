@@ -12,7 +12,6 @@ import net.minecraft.world.World;
 import org.eggwars_game.eggwars_mod.Eggwars;
 import org.eggwars_game.eggwars_mod.EggwarsMatch;
 import org.eggwars_game.eggwars_mod.EggwarsTeam;
-import org.eggwars_game.eggwars_mod.Utils.NBTUtils;
 import org.eggwars_game.eggwars_mod.control_point_crystals.SpecialSpot;
 import org.eggwars_game.eggwars_mod.control_point_crystals.controlcrystals.ControlCrystal;
 import org.eggwars_game.eggwars_mod.control_point_crystals.controlcrystals.Crystals.IndestructibleCrystal;
@@ -27,7 +26,6 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 @Mixin(EndCrystalItem.class)
     public class EndCrystalPlacementMixin {
@@ -64,13 +62,10 @@ import java.util.UUID;
 
 
             EggwarsTeam team = Eggwars.getEggwarsPlayer(player).getTeam();
-            assert team != null;
-
-            player.sendMessage(Text.literal(team.toString()), false);
-
+            
 
             ControlCrystal controlcrystal =
-                    match.addControlCrystal(
+                    (ControlCrystal) match.addEntity(
                             endCrystalEntity,
                             team
                     );

@@ -1,6 +1,5 @@
-package org.eggwars_game.eggwars_mod.new_items_and_functionalities.ModifierItems;
+package org.eggwars_game.eggwars_mod.new_items_and_functionalities.Items.ModifierItems;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
@@ -13,7 +12,7 @@ import org.eggwars_game.eggwars_mod.Players.EggwarsPlayer;
 import org.eggwars_game.eggwars_mod.control_point_crystals.controlcrystals.ControlCrystal;
 import org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.modifiers;
 import org.eggwars_game.eggwars_mod.new_items_and_functionalities.Blocks.ModBlocks;
-import org.eggwars_game.eggwars_mod.new_items_and_functionalities.modBlockItem;
+import org.eggwars_game.eggwars_mod.new_items_and_functionalities.Items.modBlockItem;
 
 public class ChorusWarpItem extends modBlockItem implements ModifierItem{
 

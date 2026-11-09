@@ -8,6 +8,7 @@ public class EggwarsTick {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             for (EggwarsMatch match : Eggwars.getMatches().keySet()) {
                 match.tick();
+                
             }
         });
     }

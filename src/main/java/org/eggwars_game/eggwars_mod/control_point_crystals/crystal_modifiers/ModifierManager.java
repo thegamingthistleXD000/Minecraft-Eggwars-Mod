@@ -2,7 +2,6 @@ package org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers;
 
 import net.minecraft.util.math.BlockPos;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;

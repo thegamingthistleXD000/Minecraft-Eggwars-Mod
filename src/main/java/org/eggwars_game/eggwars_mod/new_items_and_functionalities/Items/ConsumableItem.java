@@ -1,9 +1,8 @@
-package org.eggwars_game.eggwars_mod.new_items_and_functionalities;
+package org.eggwars_game.eggwars_mod.new_items_and_functionalities.Items;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsage;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;

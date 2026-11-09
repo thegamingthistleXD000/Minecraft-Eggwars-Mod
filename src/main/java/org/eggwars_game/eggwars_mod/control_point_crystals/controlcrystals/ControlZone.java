@@ -1,52 +1,23 @@
 package org.eggwars_game.eggwars_mod.control_point_crystals.controlcrystals;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.util.math.BlockPos;
 import org.eggwars_game.eggwars_mod.EggwarsEntity;
 import org.eggwars_game.eggwars_mod.EggwarsTeam;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
-
-
-
-
-
-
 
 
 public class ControlZone {
 
-    private EggwarsTeam team;
-    public ArrayList<BlockPos> cylvertices;
+    private final EggwarsTeam team;
+    public List<BlockPos> cylvertices;
     public BlockPos[] cornerverts =  new BlockPos[2];
-    private Set<EggwarsEntity> sources = new HashSet<EggwarsEntity>();
-
-    public Set<EggwarsEntity> getSources() {
-        return sources;
-    }
-
-    public void setSources(Set<EggwarsEntity> sources) {
-        this.sources = sources;
-    }
+    @Setter @Getter private Set<EggwarsEntity> sources = new HashSet<EggwarsEntity>();
 
     public enum zonetype {cylinder, cone, sphere, cuboid}
     zonetype type;

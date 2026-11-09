@@ -1,4 +1,4 @@
-package org.eggwars_game.eggwars_mod.new_items_and_functionalities;
+package org.eggwars_game.eggwars_mod.new_items_and_functionalities.Items;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.*;
@@ -8,7 +8,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import org.eggwars_game.eggwars_mod.Eggwars;
 import org.eggwars_game.eggwars_mod.EggwarsMatch;
-import org.eggwars_game.eggwars_mod.new_items_and_functionalities.ModifierItems.ModifierItem;
+import org.eggwars_game.eggwars_mod.new_items_and_functionalities.Items.ModifierItems.ModifierItem;
 
 
 public abstract class modBlockItem extends BlockItem {

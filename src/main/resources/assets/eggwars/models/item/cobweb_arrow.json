@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "eggwars_mod:item/cobweb_arrow"
+    "layer0": "eggwars:item/cobweb_arrow"
   }
 }

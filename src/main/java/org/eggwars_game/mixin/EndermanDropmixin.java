@@ -3,7 +3,7 @@ package org.eggwars_game.mixin;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
-import org.eggwars_game.eggwars_mod.new_items_and_functionalities.ModItems;
+import org.eggwars_game.eggwars_mod.new_items_and_functionalities.Items.ModItems;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

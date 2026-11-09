@@ -3,7 +3,7 @@ package org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.En
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.Box;
 import org.eggwars_game.eggwars_mod.EggwarsEntity;
 import org.eggwars_game.eggwars_mod.EggwarsMatch;
@@ -14,57 +14,86 @@ import org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.Mod
 import org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.modifiers;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class EnderSpirit extends Modifier {
 
-    @Override
-    public void register(EggwarsMatch match, BlockPos pos) {
-        match.modManager.addModifier(() -> this, pos);
-        match.spiritManager.addModifier(() -> this, pos);
+    public enum Mode {
+        Heal,
+        Beam
     }
+
+    private Mode mode = Mode.Heal;
+
+    private final int maxTargets = 2;
+
+    private final float strength = 2.0f;
+
+    private final float range = 15.0f;
+
+    private final int healInterval = 20;
+    private final int beamInterval = 20;
+
+    private final Map<EggwarsEntity, Integer> beamTicks = new HashMap<>();
+
+    private ServerWorld world;
 
     public EnderSpirit(ControlCrystal crystal, EggwarsPlayer player) {
         super(crystal.getPosition(), modifiers.mods.EnderSpirit, player);
-        super.controlCrystal =  crystal;
 
+        this.controlCrystal = crystal;
+        this.world = (ServerWorld) crystal.getEndCrystal().getWorld();
     }
 
-    enum Mode{Heal, Beam}
-    Mode mode = Mode.Heal;
-    int maxTargets = 2;
+    @Override
+    public void register(EggwarsMatch match) {
+        super.register(match);
+        match.spiritManager.addModifier(() -> this, getPosition());
+    }
 
-    float strength = 2;
-    private float range;
+    public void setMode(Mode mode) {
+        this.mode = mode;
+        beamTicks.clear();
+    }
 
-    ServerWorld world = (ServerWorld) super.controlCrystal.getEndCrystal().getWorld();
-    private final Map<EggwarsEntity, Integer> beamTicks = new HashMap<>();
-
+    public Mode getMode() {
+        return mode;
+    }
 
     public void heal(EggwarsEntity eggtarget) {
+        if (mode != Mode.Heal) return;
 
-        LivingEntity livetarget = checkLivingEntity(eggtarget);
-        if (livetarget == null) return;
-        if (!mode.equals(Mode.Heal)){return;}
-        livetarget.heal(strength);
+        LivingEntity target = checkLivingEntity(eggtarget);
+
+        if (target == null || !target.isAlive()) return;
+
+        target.sendMessage(Text.literal("healing u"));
+        target.heal(strength);
     }
 
     public void beam(EggwarsEntity eggtarget) {
+        if (mode != Mode.Beam) return;
 
-        LivingEntity livetarget = checkLivingEntity(eggtarget);
-        if (livetarget == null) return;
-        if (!mode.equals(Mode.Heal)){return;}
-        livetarget.heal(strength);
+        LivingEntity target = checkLivingEntity(eggtarget);
+
+        if (target == null || !target.isAlive()) return;
+
+        // Temporary basic beam damage.
+        target.sendMessage(Text.literal("damaging u"));
+        target.damage(world.getDamageSources().magic(), strength);
     }
 
-    public LivingEntity checkLivingEntity (EggwarsEntity eggentity){
+    public LivingEntity checkLivingEntity(EggwarsEntity eggentity) {
+        if (eggentity == null) return null;
+
         Entity entity = eggentity.getEntity();
-        return (entity instanceof LivingEntity) ? (LivingEntity) entity : null;
 
-
+        return entity instanceof LivingEntity living
+                ? living
+                : null;
     }
 
     private List<EggwarsEntity> findTargets() {
+
         Box box = new Box(
                 position.getX() - range,
                 position.getY() - range,
@@ -74,59 +103,68 @@ public class EnderSpirit extends Modifier {
                 position.getZ() + range
         );
 
-        List<EggwarsEntity> targets = world.getEntitiesByClass(
-                        LivingEntity.class,
-                        box,
-                        entity -> validTarget(
-                                match.getEggwarsEntity(entity)
-                        )
-                ).stream()
-                .map(match::getEggwarsEntity)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        List<EggwarsEntity> targets = new ArrayList<>(
+                world.getEntitiesByClass(
+                                LivingEntity.class,
+                                box,
+                                entity -> {
+                                    EggwarsEntity wrapped = match.getEggwarsEntity(entity);
+                                    return wrapped != null && validTarget(wrapped);
+                                }
+                        ).stream()
+                        .map(match::getEggwarsEntity)
+                        .filter(Objects::nonNull)
+                        .toList()
+        );
 
         targets.sort(Comparator.comparingDouble(
                 e -> e.getEntity().squaredDistanceTo(position.toCenterPos())
         ));
 
-        return targets.subList(0, Math.min(maxTargets, targets.size()));
+        int limit = mode == Mode.Heal ? maxTargets : 1;
+
+        return targets.subList(0, Math.min(limit, targets.size()));
     }
 
-
     private boolean validTarget(EggwarsEntity entity) {
-
         EggwarsTeam targetTeam = entity.getTeam();
-
         return (mode == Mode.Heal) == (targetTeam == team);
     }
 
     @Override
-    public void tick(){
-        List<EggwarsEntity> targets = findTargets();
-        EggwarsEntity target1 = targets.get(0);
-        EggwarsEntity target2 = targets.get(1);
+    public void tick() {
 
-        for (EggwarsEntity target : targets)
-            tickBeam(target);
+        if (world == null || world.isClient()) return;
+
+        List<EggwarsEntity> targets = findTargets();
 
         beamTicks.keySet().removeIf(target -> !targets.contains(target));
+
+        for (EggwarsEntity target : targets) {
+            tickTarget(target);
+        }
     }
 
+    private void tickTarget(EggwarsEntity target) {
 
-    public void tickBeam(EggwarsEntity target) {
+        int interval = mode == Mode.Heal
+                ? healInterval
+                : beamInterval;
+
         int ticks = beamTicks.getOrDefault(target, 0) + 1;
 
-        if (ticks >= beamTicks.get(target)) {
-            if (mode == Mode.Heal)
+        if (ticks >= interval) {
+
+            if (mode == Mode.Heal) {
                 heal(target);
-            else
+
+            } else {
                 beam(target);
+            }
 
             ticks = 0;
         }
 
         beamTicks.put(target, ticks);
     }
-
-
 }

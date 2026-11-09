@@ -17,8 +17,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(TridentItem.class)
@@ -65,14 +63,21 @@ public abstract class TridentItemMixin {
     }
 
 
-    @ModifyVariable(
+    @ModifyExpressionValue(
             method = "onStoppedUsing",
             at = @At(
-                    value = "STORE"
-            ),
-            ordinal = 0
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/enchantment/EnchantmentHelper;getTridentSpinAttackStrength(Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/LivingEntity;)F"
+            )
     )
-    private float eggwars$modifyRiptideForce(float f) {
-        return f + 5f;
+    private float eggwars$modifyRiptideStrength(
+            float original
+    ) {
+        if (original > 0.0F) {
+            return 5f;
+        }
+
+
+        return original;
     }
 }

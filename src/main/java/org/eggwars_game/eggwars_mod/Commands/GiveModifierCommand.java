@@ -5,15 +5,12 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import org.eggwars_game.eggwars_mod.Utils.NBTUtils;
-import org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.Modifier;
 import org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.modifiers;
-import org.eggwars_game.eggwars_mod.new_items_and_functionalities.ModItems;
+import org.eggwars_game.eggwars_mod.new_items_and_functionalities.Items.ModItems;
 
 public class GiveModifierCommand {
 

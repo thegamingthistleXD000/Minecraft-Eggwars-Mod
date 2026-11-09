@@ -1,4 +1,4 @@
-package org.eggwars_game.eggwars_mod.new_items_and_functionalities.ModifierItems;
+package org.eggwars_game.eggwars_mod.new_items_and_functionalities.Items.ModifierItems;
 
 import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.item.ItemStack;
@@ -10,7 +10,7 @@ import org.eggwars_game.eggwars_mod.EggwarsMatch;
 import org.eggwars_game.eggwars_mod.Players.EggwarsPlayer;
 import org.eggwars_game.eggwars_mod.control_point_crystals.controlcrystals.ControlCrystal;
 import org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.modifiers;
-import org.eggwars_game.eggwars_mod.new_items_and_functionalities.modItem;
+import org.eggwars_game.eggwars_mod.new_items_and_functionalities.Items.modItem;
 
 public class EnderSpiritItem extends modItem implements ModifierItem {
 

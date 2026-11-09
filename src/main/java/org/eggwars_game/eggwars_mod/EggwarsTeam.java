@@ -1,5 +1,6 @@
 package org.eggwars_game.eggwars_mod;
 
+import lombok.Getter;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -11,8 +12,8 @@ import java.util.UUID;
 public class EggwarsTeam {
     private final EggwarsMatch match;
     private final UUID id =  UUID.randomUUID();
-    private final Text displayName;
-    private final Formatting color;
+    @Getter private final Text displayName;
+    @Getter private final Formatting color;
 
     private final Set<EggwarsEntity> members = new HashSet<>();
 

@@ -34,9 +34,9 @@ public class ForceField extends Modifier
     }
 
     @Override
-    public void register(EggwarsMatch match, BlockPos pos) {
-        match.modManager.addModifier(() -> this, pos);
-        match.fieldManager.addModifier(() -> this, pos);
+    public void register(EggwarsMatch match) {
+        super.register(match);
+        match.fieldManager.addModifier(() -> this, getPosition());
     }
 
     public enum Mode {Repel, Pull, Mining_Fatigue, Ally_Buffs}
@@ -64,7 +64,7 @@ public class ForceField extends Modifier
         System.out.println("addForce called for " + target.getName().getString());
 
         System.out.println("Field team: " + getTeam());
-        System.out.println("Target team: " + target.getScoreboardTeam());
+        System.out.println("Target team: " + eggtarget.getTeam());
 
         if (eggtarget.getTeam() == getTeam()) return;
 

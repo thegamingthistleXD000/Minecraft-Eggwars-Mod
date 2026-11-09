@@ -1,4 +1,4 @@
-package org.eggwars_game.eggwars_mod.new_items_and_functionalities;
+package org.eggwars_game.eggwars_mod.new_items_and_functionalities.Items;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.Item;
@@ -7,7 +7,9 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import org.eggwars_game.eggwars_mod.Eggwars;
-import org.eggwars_game.eggwars_mod.new_items_and_functionalities.ModifierItems.*;
+import org.eggwars_game.eggwars_mod.new_items_and_functionalities.Items.ArrowItems.CobwebArrowItem;
+import org.eggwars_game.eggwars_mod.new_items_and_functionalities.Items.ArrowItems.SpongeArrowItem;
+import org.eggwars_game.eggwars_mod.new_items_and_functionalities.Items.ModifierItems.*;
 
 public class ModItems {
 
@@ -19,16 +21,22 @@ public class ModItems {
     public static final ChorusWarpItem CHORUS_WARP = registerItem("chorus_warp", new ChorusWarpItem(new Item.Settings().maxCount(1)));
     public static final WarpFruitItem WARP_FRUIT = registerItem("warp_fruit", new WarpFruitItem(new Item.Settings().maxCount(64)));
 
-    public static final modItem ENDER_SHARD =  registerItem("endershard", new modItem(new Item.Settings().maxCount(64)));
-    public static final modItem COBWEB_ARROW = registerItem("cobweb_arrow", new modItem(new Item.Settings().maxCount(64)));
-    public static final modItem SPONGE_ARROW = registerItem("sponge_arrow", new modItem(new Item.Settings().maxCount(64)));
+    public static final modItem ENDER_SHARD =  registerItem("ender_shard", new modItem(new Item.Settings().maxCount(64)));
+    public static final Item COBWEB_ARROW = registerItem(
+            "cobweb_arrow",
+            new CobwebArrowItem(new Item.Settings())
+    );
+
+    public static final Item SPONGE_ARROW = registerItem(
+            "sponge_arrow",
+            new SpongeArrowItem(new Item.Settings())
+    );
     public static final modItem MILK_BALL = registerItem("milk_ball", new modItem(new Item.Settings().maxCount(16)));
     public static final modItem END_OMEN_POTION = registerItem("end_omen_potion", new modItem (new Item.Settings().maxCount(1)));
 
 
-    // public static final Item COBWEB_ARROW = registerItem("cobweb_arrow", new CobwebArrowItem(new Item.Settings().maxCount(16)));
-    // public static final Item MILK_BALL = registerItem("milk_ball", new MilkBallItem(new Item.Settings().maxCount(16)));
-    // public static final Item SPONGE_ARROW = registerItem("sponge_arrow", new SpongeArrowItem(new Item.Settings().maxCount(16)));
+
+
 
     private static <T extends Item> T registerItem(String name, T item) {
         return Registry.register(
@@ -44,5 +52,7 @@ public class ModItems {
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register(entries -> {
             entries.add(ENDER_SHARD);
         });
+
+
     }
 }

@@ -19,9 +19,9 @@ import org.jetbrains.annotations.NotNull;
 public class PearlBarrier extends Modifier {
 
     @Override
-    public void register(EggwarsMatch match, BlockPos pos) {
-        match.modManager.addModifier(() -> this, pos);
-        match.barrierManager.addModifier(() -> this, pos);
+    public void register(EggwarsMatch match) {
+        super.register(match);
+        match.barrierManager.addModifier(() -> this, getPosition());
     }
 
     public PearlBarrier(ControlCrystal crystal, EggwarsPlayer player) {

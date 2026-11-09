@@ -33,6 +33,6 @@ public class ModBlocks {
         );
     }
 
-    public static void registerBlocks() {
+    public static void registerModBlocks() {
     }
 }

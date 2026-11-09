@@ -1,4 +1,4 @@
-package org.eggwars_game.eggwars_mod.new_items_and_functionalities.ModifierItems;
+package org.eggwars_game.eggwars_mod.new_items_and_functionalities.Items.ModifierItems;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
@@ -59,7 +59,6 @@ public interface ModifierItem {
 
         EggwarsMatch match = Eggwars.getMatch(player);
         if (match == null) return ActionResult.FAIL;
-
 
         ControlCrystal crystal;
         try {

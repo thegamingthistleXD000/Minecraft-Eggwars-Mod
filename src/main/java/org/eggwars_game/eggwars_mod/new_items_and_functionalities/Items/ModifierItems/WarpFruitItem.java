@@ -1,4 +1,4 @@
-package org.eggwars_game.eggwars_mod.new_items_and_functionalities.ModifierItems;
+package org.eggwars_game.eggwars_mod.new_items_and_functionalities.Items.ModifierItems;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -18,7 +18,7 @@ import org.eggwars_game.eggwars_mod.Utils.NBTUtils;
 import org.eggwars_game.eggwars_mod.control_point_crystals.controlcrystals.ControlCrystal;
 import org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.ChorusWarp.ChorusWarp;
 import org.eggwars_game.eggwars_mod.control_point_crystals.crystal_modifiers.modifiers;
-import org.eggwars_game.eggwars_mod.new_items_and_functionalities.ConsumableItem;
+import org.eggwars_game.eggwars_mod.new_items_and_functionalities.Items.ConsumableItem;
 import org.eggwars_game.eggwars_mod.new_items_and_functionalities.Blocks.ModBlocks;
 
 

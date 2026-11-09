@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "eggwars_mod:item/milk_ball"
+    "layer0": "eggwars:item/milk_ball"
   }
 }
